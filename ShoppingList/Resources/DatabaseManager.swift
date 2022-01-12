@@ -29,7 +29,7 @@ final class DatabaseManager {
     }
     
     public func getItems(completion: @escaping (Result<[Item],Error>) -> Void) {
-        database.child("shoppingItems").observe(.value, with: {
+        database.child("shoppingItems").queryOrdered(byChild: "name").observe(.value, with: {
             snapshot in
             
             var newItems = [Item]()
