@@ -108,7 +108,7 @@ class GroceryListViewController: UITableViewController {
         cell.detailTextLabel?.text = "Added By: \(item.addedBy)"
         
         if item.completed {
-            cell.backgroundColor = UIColor.init(red: 0, green: 1, blue: 0, alpha: 0.5)
+            cell.backgroundColor = UIColor.systemTeal
         }else {
             cell.backgroundColor = UIColor.systemBackground
         }
