@@ -25,12 +25,12 @@ class LoginViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        
         if Auth.auth().currentUser == nil {
             self.navigationController?.popToRootViewController(animated: true)
-            navigationController?.setNavigationBarHidden(true, animated: false)
         }else{
             self.performSegue(withIdentifier: "MainView", sender: nil)
-            navigationController?.setNavigationBarHidden(false, animated: false)
         }
     }
     
