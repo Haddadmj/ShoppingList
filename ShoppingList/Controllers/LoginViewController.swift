@@ -57,7 +57,7 @@ class LoginViewController: UIViewController {
                 [weak self] _, error in
                 
                 guard error == nil else {
-                    print(String(describing: error?.localizedDescription))
+                    self?.showAlert(title: "Login Error", message: String(describing: error?.localizedDescription))
                     return
                 }
                 
@@ -72,7 +72,7 @@ class LoginViewController: UIViewController {
                 [weak self] _, error in
                 
                 guard error == nil else {
-                    print(String(describing: error?.localizedDescription))
+                    self?.showAlert(title: "Register Error", message: String(describing: error?.localizedDescription))
                     return
                 }
                 
@@ -86,5 +86,15 @@ class LoginViewController: UIViewController {
     }
 
 
+}
+
+extension LoginViewController {
+    func showAlert(title:String, message:String){
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        
+        present(alert, animated: true, completion: nil)
+    }
 }
 

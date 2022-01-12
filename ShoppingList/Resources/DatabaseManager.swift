@@ -34,12 +34,12 @@ final class DatabaseManager {
             
             var newItems = [Item]()
             for children in snapshot.children {
-                guard let child = children as? DataSnapshot, let item = child.value as? [String:String], let name = item["name"], let addedBy = item["addedBy"] else {
+                guard let child = children as? DataSnapshot, let item = child.value as? [String:Any], let name = item["name"] as? String, let addedBy = item["addedBy"] as? String, let completed = item["completed"] as? Bool else {
                     completion(.failure(DatabaseError.failedToFetch))
                     return
                 }
                 
-                newItems.append(Item(id: child.key, name: name, addedBy: addedBy))
+                newItems.append(Item(id: child.key, name: name, addedBy: addedBy, completed: completed))
             }
             
             completion(.success(newItems))

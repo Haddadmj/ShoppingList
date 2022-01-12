@@ -10,9 +10,7 @@ import FirebaseDatabase
 import FirebaseAuth
 
 class GroceryListViewController: UITableViewController {
-    
-    let ref = Database.database().reference(withPath: "shoppingItems")
-    
+        
     var items: [Item] = []
     
     @IBOutlet weak var usersCount: UIBarButtonItem!
@@ -33,7 +31,7 @@ class GroceryListViewController: UITableViewController {
                     self?.tableView.reloadData()
                 }
             case .failure(let error):
-                print(error)
+                self?.showAlert(title: "Failed To Get Items", message: error.localizedDescription)
             }
         })
         
@@ -45,7 +43,7 @@ class GroceryListViewController: UITableViewController {
                     self?.usersCount.title = "\(users.count)"
                 }
             case .failure(let error):
-                print(error)
+                self?.showAlert(title: "Failed To Get Items", message: error.localizedDescription)
             }
         })
         
@@ -80,7 +78,7 @@ class GroceryListViewController: UITableViewController {
             }else{
                 // Adding Item
                 if let user = Auth.auth().currentUser, let email = user.email {
-                    let item = Item(name: itemName, addedBy: email)
+                    let item = Item(name: itemName, addedBy: email, completed: false)
                     DatabaseManager.shared.addItem(with: item)
                     
                 }
@@ -109,19 +107,60 @@ class GroceryListViewController: UITableViewController {
         cell.textLabel?.text = item.name
         cell.detailTextLabel?.text = "Added By: \(item.addedBy)"
         
+        if item.completed {
+            cell.backgroundColor = UIColor.init(red: 0, green: 1, blue: 0, alpha: 0.5)
+        }else {
+            cell.backgroundColor = UIColor.systemBackground
+        }
+        
         return cell
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let item = items[indexPath.row]
-            DatabaseManager.shared.deleteItem(with: item.id!)
+            if item.addedBy == Auth.auth().currentUser?.email {
+                DatabaseManager.shared.deleteItem(with: item.id!)
+            }else {
+                showAlert(title: "Delete Error", message: "Can't Delete Items You Don't Own")
+            }
+            
         }
     }
     
+    
+    override func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
+        let item = items[indexPath.row]
+        if item.addedBy == Auth.auth().currentUser?.email {
+            itemAlert(title: "Edit Item", message: "Enter New Item Name", buttonTitle: "Edit Item", item: item)
+        }else {
+            showAlert(title: "Edit Error", message: "Can't Edit Items You Don't Own")
+        }
+        
+        
+    }
+    
+    
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let item = items[indexPath.row]
-        itemAlert(title: "Edit Item", message: "Enter New Item Name", buttonTitle: "Edit Item", item: item)
+        var item = items[indexPath.row]
+        
+        if item.addedBy == Auth.auth().currentUser?.email {
+            item.completed = !item.completed
+            DatabaseManager.shared.updateItem(of: item.id!, with: item)
+        }else {
+            showAlert(title: "Completing Error", message: "Can't Complete Item You Don't Own")
+        }
+    }
+}
+
+extension GroceryListViewController {
+    func showAlert(title:String, message:String){
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        
+        present(alert, animated: true, completion: nil)
     }
 }

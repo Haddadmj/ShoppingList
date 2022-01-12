@@ -11,11 +11,13 @@ struct Item {
     var id:String?
     var name:String
     var addedBy:String
+    var completed: Bool
     
     func toAnyObject() -> Any {
         return [
             "name":name,
-            "addedBy": addedBy
+            "addedBy": addedBy,
+            "completed":completed
         ]
     }
 }
