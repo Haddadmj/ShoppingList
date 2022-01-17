@@ -15,6 +15,11 @@ class LoginViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let apperance = UINavigationBarAppearance()
+        apperance.configureWithOpaqueBackground()
+        apperance.backgroundColor = .systemTeal
+        navigationController?.navigationBar.standardAppearance = apperance
+        navigationController?.navigationBar.scrollEdgeAppearance = apperance
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
     

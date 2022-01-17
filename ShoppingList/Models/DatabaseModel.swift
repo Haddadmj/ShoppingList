@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseDatabase
 
 struct Item {
     var id:String?
@@ -17,7 +18,8 @@ struct Item {
         return [
             "name":name,
             "addedBy": addedBy,
-            "completed":completed
+            "completed":completed,
+            "date": ServerValue.timestamp()
         ]
     }
 }
